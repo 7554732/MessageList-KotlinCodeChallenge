@@ -19,12 +19,13 @@ class MessagesRepository(private val database: MessagesDatabase) {
         it.asDomainModel()
     }
 
-    suspend fun refreshMessages(fileName:String) {
+    suspend fun refreshMessages(files:List<String>?) {
+        if(files == null) return
         withContext(Dispatchers.IO) {
-            Timber.d("refresh messages is called");
-            sleep(5000)
-            val networkMessageContainer = NetworkMessageContainer(MessageNetwork.messageService.getMessages(fileName))
-            database.messageDao.insertAll(networkMessageContainer.asDatabaseModel())
+            for(file:String in files){
+                val networkMessageContainer = NetworkMessageContainer(MessageNetwork.messageService.getMessages(file))
+                database.messageDao.insertAll(networkMessageContainer.asDatabaseModel())
+            }
         }
     }
 }
