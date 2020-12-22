@@ -14,7 +14,7 @@ interface MessageService {
 
 object MessageNetwork{
 
-    const val API_ENDPOINT = "http://audiobooks-3.ru/message_list/"
+    val API_ENDPOINT = NetworkInputDataManager.url
 
     private val retrofit = Retrofit.Builder()
             .baseUrl(API_ENDPOINT)

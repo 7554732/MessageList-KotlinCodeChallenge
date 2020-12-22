@@ -1,6 +1,8 @@
 package com.fomichev.messagelist_kotlincodechallenge
 
 import android.app.Application
+import com.fomichev.messagelist_kotlincodechallenge.network.InputFiles
+import com.fomichev.messagelist_kotlincodechallenge.network.NetworkInputDataManager
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -14,6 +16,7 @@ class MLApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+//        NetworkInputDataManager.setInputFiles(InputFiles(files = listOf("01.json")))
         delayedInit()
     }
 

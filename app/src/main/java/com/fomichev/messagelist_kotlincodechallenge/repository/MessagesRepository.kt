@@ -6,12 +6,11 @@ import com.fomichev.messagelist_kotlincodechallenge.database.MessagesDatabase
 import com.fomichev.messagelist_kotlincodechallenge.database.asDomainModel
 import com.fomichev.messagelist_kotlincodechallenge.domain.MessageModel
 import com.fomichev.messagelist_kotlincodechallenge.network.MessageNetwork
+import com.fomichev.messagelist_kotlincodechallenge.network.NetworkInputDataManager
 import com.fomichev.messagelist_kotlincodechallenge.network.NetworkMessageContainer
 import com.fomichev.messagelist_kotlincodechallenge.network.asDatabaseModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import timber.log.Timber
-import java.lang.Thread.sleep
 
 class MessagesRepository(private val database: MessagesDatabase) {
 
@@ -19,7 +18,9 @@ class MessagesRepository(private val database: MessagesDatabase) {
         it.asDomainModel()
     }
 
-    suspend fun refreshMessages(files:List<String>?) {
+
+    suspend fun refreshMessages() {
+        val files:List<String>? = NetworkInputDataManager.files
         if(files == null) return
         withContext(Dispatchers.IO) {
             for(file:String in files){

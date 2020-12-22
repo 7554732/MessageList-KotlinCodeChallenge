@@ -22,9 +22,6 @@ class MessageListViewModel(application: Application) : AndroidViewModel(applicat
     val isNetworkErrorShown: LiveData<Boolean>
         get() = _isNetworkErrorShown
 
-    object InputFiles {
-        val files = listOf("01.json", "02.json", "03.json")
-    }
 
     init {
         refreshDataFromRepository()
@@ -34,7 +31,7 @@ class MessageListViewModel(application: Application) : AndroidViewModel(applicat
     private fun refreshDataFromRepository() {
         viewModelScope.launch {
             try {
-                messagesRepository.refreshMessages(InputFiles.files)
+                messagesRepository.refreshMessages()
                 _eventNetworkError.value = false
                 _isNetworkErrorShown.value = false
 
