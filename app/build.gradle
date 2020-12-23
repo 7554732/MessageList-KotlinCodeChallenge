@@ -99,4 +99,7 @@ dependencies {
     // WorkManager dependency
     def work_version = "1.0.1"
     implementation "android.arch.work:work-runtime-ktx:$work_version"
+
+    // swipe refresh layout
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 }

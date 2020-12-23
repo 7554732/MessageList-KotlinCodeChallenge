@@ -28,7 +28,7 @@ class MessageListViewModel(application: Application) : AndroidViewModel(applicat
     }
 
 
-    private fun refreshDataFromRepository() {
+     fun refreshDataFromRepository() {
         viewModelScope.launch {
             try {
                 messagesRepository.refreshMessages()

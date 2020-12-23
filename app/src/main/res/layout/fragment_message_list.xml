@@ -9,23 +9,20 @@
             type="com.fomichev.messagelist_kotlincodechallenge.viewmodels.MessageListViewModel" />
     </data>
 
-    <FrameLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:isNetworkError = "@{safeUnbox(viewModel.eventNetworkError)}"
+        app:messages = "@{viewModel.messages}"
+        app:onRefreshListener="@{() -> viewModel.refreshDataFromRepository()}"
         tools:context=".ui.MessageListFragment">
 
-        <ProgressBar
-            android:id="@+id/loading_spinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:isNetworkError = "@{safeUnbox(viewModel.eventNetworkError)}"
-            app:messages = "@{viewModel.messages}"
-            android:layout_gravity="center" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    </FrameLayout>
 </layout>
