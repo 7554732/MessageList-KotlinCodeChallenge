@@ -10,8 +10,11 @@
             type="com.fomichev.messagelist_kotlincodechallenge.domain.MessageModel" />
 
         <variable
-            name="messageCallback"
+            name="messageClick"
             type="com.fomichev.messagelist_kotlincodechallenge.ui.MessageClick" />
+        <variable
+            name="messageLongClick"
+            type="com.fomichev.messagelist_kotlincodechallenge.ui.MessageLongClick" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -46,7 +49,8 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:background="?attr/selectableItemBackground"
-                android:onClick="@{() -> messageCallback.onClick(message)}"
+                android:onClick="@{() -> messageClick.onClick(message)}"
+                android:onLongClick="@{(v) -> messageLongClick.onLongClick(v, message)}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

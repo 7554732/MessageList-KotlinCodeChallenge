@@ -1,6 +1,7 @@
 package com.fomichev.messagelist_kotlincodechallenge.ui
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
@@ -9,7 +10,7 @@ import com.fomichev.messagelist_kotlincodechallenge.R
 import com.fomichev.messagelist_kotlincodechallenge.databinding.MessageItemBinding
 import com.fomichev.messagelist_kotlincodechallenge.domain.MessageModel
 
-class MessageListAdapter(val callback: MessageClick) : RecyclerView.Adapter<MessageViewHolder>() {
+class MessageListAdapter(val messageClick: MessageClick, val messageLongClick: MessageLongClick) : RecyclerView.Adapter<MessageViewHolder>() {
 
     var messages: List<MessageModel> = emptyList()
         set(value) {
@@ -31,7 +32,8 @@ class MessageListAdapter(val callback: MessageClick) : RecyclerView.Adapter<Mess
     override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
         holder.viewDataBinding.also {
             it.message = messages[position]
-            it.messageCallback = callback
+            it.messageClick = messageClick
+            it.messageLongClick = messageLongClick
         }
     }
 
@@ -48,3 +50,11 @@ class MessageViewHolder(val viewDataBinding:MessageItemBinding) :
 class MessageClick(val block: (MessageModel) -> Unit) {
     fun onClick(message: MessageModel) = block(message)
 }
+
+class MessageLongClick(val block: (MessageModel) -> Unit) {
+    fun onLongClick(view: View, message: MessageModel): Boolean  {
+        block(message)
+        return true
+    }
+}
+

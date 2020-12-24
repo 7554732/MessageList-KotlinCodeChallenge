@@ -15,3 +15,11 @@ fun hideRefreshingIndicator(view: SwipeRefreshLayout, isNetworkError: Boolean, m
         view.setRefreshing(false)
     }
 }
+
+/**
+*   for     app:onLongClick="@{() -> messageLongClick.onLongClick(message)}"
+*/
+@BindingAdapter("onLongClick")
+fun setOnLongClickListener(view: View, listener: Runnable) {
+    view.setOnLongClickListener { listener.run(); true }
+}

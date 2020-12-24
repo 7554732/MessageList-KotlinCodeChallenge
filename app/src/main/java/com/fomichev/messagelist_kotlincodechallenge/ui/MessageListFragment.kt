@@ -52,10 +52,13 @@ class MessageListFragment : Fragment() {
 
         binding.viewModel = viewModel
 
-        messageListAdapter = MessageListAdapter(MessageClick {
-
-            Toast.makeText(activity, "MessageClick " + it.id, Toast.LENGTH_LONG).show()
-        })
+        messageListAdapter = MessageListAdapter(
+                MessageClick {
+                    Toast.makeText(activity, "MessageClick " + it.id, Toast.LENGTH_LONG).show()
+                },
+                MessageLongClick {
+                    Toast.makeText(activity, "MessageLongClick " + it.id, Toast.LENGTH_LONG).show()
+                })
 
         binding.root.findViewById<RecyclerView>(R.id.recycler_view).apply {
             layoutManager = LinearLayoutManager(context)
