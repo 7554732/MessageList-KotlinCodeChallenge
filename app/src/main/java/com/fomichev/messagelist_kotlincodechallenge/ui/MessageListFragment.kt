@@ -58,6 +58,7 @@ class MessageListFragment : Fragment() {
                 },
                 MessageLongClick {
                     Toast.makeText(activity, "MessageLongClick " + it.id, Toast.LENGTH_LONG).show()
+                    viewModel.deleteMessagesFromRepository(listOf(it))
                 })
 
         binding.root.findViewById<RecyclerView>(R.id.recycler_view).apply {

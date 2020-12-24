@@ -3,6 +3,7 @@ package com.fomichev.messagelist_kotlincodechallenge.viewmodels
 import android.app.Application
 import androidx.lifecycle.*
 import com.fomichev.messagelist_kotlincodechallenge.database.getDatabase
+import com.fomichev.messagelist_kotlincodechallenge.domain.MessageModel
 import com.fomichev.messagelist_kotlincodechallenge.repository.MessagesRepository
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -44,6 +45,12 @@ class MessageListViewModel(application: Application) : AndroidViewModel(applicat
 
     fun onNetworkErrorShown() {
         _isNetworkErrorShown.value = true
+    }
+
+    fun deleteMessagesFromRepository(messages: List<MessageModel>){
+        viewModelScope.launch {
+            messagesRepository.deleteMessageFromDB(messages)
+        }
     }
 
     class Factory(val app: Application) : ViewModelProvider.Factory {

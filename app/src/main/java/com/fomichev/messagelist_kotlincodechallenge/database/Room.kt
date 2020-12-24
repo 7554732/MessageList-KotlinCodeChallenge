@@ -11,7 +11,10 @@ interface MessageDao {
     fun getMessages(): LiveData<List<DatabaseMessage>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll( videos: List<DatabaseMessage>)
+    fun insertAll( messages: List<DatabaseMessage>)
+
+    @Delete
+    fun delete(messages: List<DatabaseMessage>)
 }
 
 
