@@ -18,6 +18,14 @@ class MessageListAdapter(val messageClick: MessageClick, val messageLongClick: M
             notifyDataSetChanged()
         }
 
+    var multiSelect: Boolean = false
+
+    val selectedMessages: MutableList<MessageModel> = mutableListOf<MessageModel>()
+
+    fun isSelected(message: MessageModel): Boolean {
+        return false
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
         val withDataBinding:MessageItemBinding = DataBindingUtil.inflate(
             LayoutInflater.from(parent.context),

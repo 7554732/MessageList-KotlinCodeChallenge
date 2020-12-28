@@ -10,7 +10,6 @@ import java.io.IOException
 
 class MessageListViewModel(application: Application) : AndroidViewModel(application) {
 
-
     private val messagesRepository = MessagesRepository(getDatabase(application))
 
     val messages = messagesRepository.messages
