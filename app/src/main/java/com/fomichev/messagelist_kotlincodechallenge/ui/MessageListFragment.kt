@@ -1,12 +1,10 @@
 package com.fomichev.messagelist_kotlincodechallenge.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,6 +13,7 @@ import com.fomichev.messagelist_kotlincodechallenge.R
 import com.fomichev.messagelist_kotlincodechallenge.databinding.FragmentMessageListBinding
 import com.fomichev.messagelist_kotlincodechallenge.domain.MessageModel
 import com.fomichev.messagelist_kotlincodechallenge.viewmodels.MessageListViewModel
+
 
 class MessageListFragment : Fragment() {
 
@@ -54,11 +53,21 @@ class MessageListFragment : Fragment() {
 
         messageListAdapter = MessageListAdapter(
                 MessageClick {
-                    Toast.makeText(activity, "MessageClick " + it.id, Toast.LENGTH_LONG).show()
+                    val position = it
+                    if (messageListAdapter!!.multiSelect) {
+                        if(!messageListAdapter!!.selectedItems.remove(position)) {
+                            messageListAdapter!!.selectedItems.add(position)
+                        }
+                        messageListAdapter!!.notifyDataSetChanged()
+                    }
                 },
                 MessageLongClick {
-                    Toast.makeText(activity, "MessageLongClick " + it.id, Toast.LENGTH_LONG).show()
-                    viewModel.deleteMessagesFromRepository(listOf(it))
+                    val position = it
+                    if (!messageListAdapter!!.multiSelect) {
+                        startActionMode()
+                        messageListAdapter!!.selectedItems.add(position)
+                        messageListAdapter!!.notifyDataSetChanged()
+                    }
                 })
 
         binding.root.findViewById<RecyclerView>(R.id.recycler_view).apply {
@@ -67,12 +76,39 @@ class MessageListFragment : Fragment() {
         }
 
 
-        // Observer for the network error.
+        // Observer for the netwok error.
         viewModel.eventNetworkError.observe(this, Observer<Boolean> { isNetworkError ->
             if (isNetworkError) onNetworkError()
         })
 
         return binding.root
+    }
+
+    fun startActionMode() {
+        activity?.startActionMode(actionModeCallback)
+    }
+
+    val actionModeCallback: ActionMode.Callback = object : ActionMode.Callback {
+        override fun onCreateActionMode(mode: ActionMode?, menu: Menu): Boolean {
+            messageListAdapter!!.multiSelect = true
+            menu.add("Delete")
+            return true
+        }
+
+        override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            return false
+        }
+
+        override fun onActionItemClicked(mode: ActionMode, item: MenuItem?): Boolean {
+            viewModel.deleteMessagesFromRepository(messageListAdapter!!.selectedMessages)
+            mode.finish()
+            return true
+        }
+
+        override fun onDestroyActionMode(mode: ActionMode?) {
+            messageListAdapter!!.multiSelect = false
+            messageListAdapter!!.selectedItems.clear()
+        }
     }
 
     private fun onNetworkError() {
@@ -82,3 +118,4 @@ class MessageListFragment : Fragment() {
         }
     }
 }
+
