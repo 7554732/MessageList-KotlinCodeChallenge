@@ -1,7 +1,6 @@
 package com.fomichev.messagelist_kotlincodechallenge.ui
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
@@ -12,18 +11,24 @@ import com.fomichev.messagelist_kotlincodechallenge.domain.MessageModel
 
 class MessageListAdapter(val messageClick: MessageClick, val messageLongClick: MessageLongClick) : RecyclerView.Adapter<MessageViewHolder>() {
 
+    val selectedMessages: List<MessageModel>
+        get() {
+            return selectedItems.map{messages.get(it)}
+        }
+
     var messages: List<MessageModel> = emptyList()
         set(value) {
+            if(multiSelect) return
             field = value
             notifyDataSetChanged()
         }
 
     var multiSelect: Boolean = false
 
-    val selectedMessages: MutableList<MessageModel> = mutableListOf<MessageModel>()
+    val selectedItems: MutableSet<Int> = mutableSetOf<Int>()
 
-    fun isSelected(message: MessageModel): Boolean {
-        return false
+    fun isSelected(position: Int): Boolean {
+        return selectedItems.contains(position)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
@@ -39,7 +44,9 @@ class MessageListAdapter(val messageClick: MessageClick, val messageLongClick: M
 
     override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
         holder.viewDataBinding.also {
+            it.position = position
             it.message = messages[position]
+            it.isSelected = isSelected(position)
             it.messageClick = messageClick
             it.messageLongClick = messageLongClick
         }
@@ -55,13 +62,15 @@ class MessageViewHolder(val viewDataBinding:MessageItemBinding) :
     }
 }
 
-class MessageClick(val block: (MessageModel) -> Unit) {
-    fun onClick(message: MessageModel) = block(message)
+class MessageClick(val block: (Int) -> Unit) {
+    fun onClick(position: Int) {
+           block(position)
+    }
 }
 
-class MessageLongClick(val block: (MessageModel) -> Unit) {
-    fun onLongClick(view: View, message: MessageModel): Boolean  {
-        block(message)
+class MessageLongClick(val block: (Int) -> Unit) {
+    fun onLongClick(position: Int): Boolean  {
+        block(position)
         return true
     }
 }

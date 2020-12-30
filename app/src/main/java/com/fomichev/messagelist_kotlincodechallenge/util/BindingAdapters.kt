@@ -2,10 +2,10 @@
 package com.fomichev.messagelist_kotlincodechallenge.util
 
 import android.view.View
-import android.view.ViewGroup
 import androidx.databinding.BindingAdapter
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.fomichev.messagelist_kotlincodechallenge.domain.MessageModel
+import com.google.android.material.card.MaterialCardView
 
 @BindingAdapter("isNetworkError", "messages")
 fun hideRefreshingIndicator(view: SwipeRefreshLayout, isNetworkError: Boolean, messages: List<MessageModel>?) {
@@ -14,6 +14,11 @@ fun hideRefreshingIndicator(view: SwipeRefreshLayout, isNetworkError: Boolean, m
     if(isNetworkError) {
         view.setRefreshing(false)
     }
+}
+
+@BindingAdapter("isCardSelected")
+fun setListItemSelected(view: MaterialCardView, isSelected: Boolean) {
+    view.setChecked(isSelected)
 }
 
 /**

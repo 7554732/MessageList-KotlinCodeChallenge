@@ -4,10 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="message"
             type="com.fomichev.messagelist_kotlincodechallenge.domain.MessageModel" />
+
+        <variable
+            name="position"
+            type="int" />
+
+        <variable
+            name="isSelected"
+            type="boolean" />
 
         <variable
             name="messageClick"
@@ -20,10 +27,12 @@
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="1dp"
         android:layout_marginBottom="1dp"
+        android:layout_marginTop="1dp"
+        android:checkable="true"
         app:cardCornerRadius="0dp"
-        app:cardElevation="2dp">
+        app:cardElevation="2dp"
+        app:isCardSelected="@{isSelected}">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -33,10 +42,10 @@
                 android:id="@+id/message_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="8dp"
                 android:text="@{message.text}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -49,8 +58,8 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:background="?attr/selectableItemBackground"
-                android:onClick="@{() -> messageClick.onClick(message)}"
-                android:onLongClick="@{(v) -> messageLongClick.onLongClick(v, message)}"
+                android:onClick="@{() -> messageClick.onClick(position)}"
+                android:onLongClick="@{() -> messageLongClick.onLongClick(position)}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

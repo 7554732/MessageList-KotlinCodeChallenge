@@ -53,13 +53,20 @@ class MessageListFragment : Fragment() {
 
         messageListAdapter = MessageListAdapter(
                 MessageClick {
-                    if(messageListAdapter!!.multiSelect) {
-                            messageListAdapter!!.selectedMessages.add(it)
+                    val position = it
+                    if (messageListAdapter!!.multiSelect) {
+                        if(!messageListAdapter!!.selectedItems.remove(position)) {
+                            messageListAdapter!!.selectedItems.add(position)
+                        }
+                        messageListAdapter!!.notifyDataSetChanged()
                     }
                 },
                 MessageLongClick {
-                    if(!messageListAdapter!!.multiSelect) {
+                    val position = it
+                    if (!messageListAdapter!!.multiSelect) {
                         startActionMode()
+                        messageListAdapter!!.selectedItems.add(position)
+                        messageListAdapter!!.notifyDataSetChanged()
                     }
                 })
 
@@ -100,7 +107,7 @@ class MessageListFragment : Fragment() {
 
         override fun onDestroyActionMode(mode: ActionMode?) {
             messageListAdapter!!.multiSelect = false
-            messageListAdapter!!.selectedMessages.clear()
+            messageListAdapter!!.selectedItems.clear()
         }
     }
 
