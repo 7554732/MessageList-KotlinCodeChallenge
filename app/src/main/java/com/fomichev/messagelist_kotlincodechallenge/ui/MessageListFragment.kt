@@ -29,11 +29,8 @@ class MessageListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.messages.observe(viewLifecycleOwner, Observer<List<MessageModel>> { messages ->
-            messages?.apply {
-                messageListAdapter?.messages = messages
-            }
-        })
+
+        viewModel.messages.observe(viewLifecycleOwner, Observer(messageListAdapter!!::submitList))
     }
 
     override fun onCreateView(

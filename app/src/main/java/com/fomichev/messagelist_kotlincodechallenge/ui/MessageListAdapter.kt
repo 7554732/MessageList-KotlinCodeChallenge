@@ -4,12 +4,38 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
+import androidx.paging.PagedListAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.fomichev.messagelist_kotlincodechallenge.R
 import com.fomichev.messagelist_kotlincodechallenge.databinding.MessageItemBinding
 import com.fomichev.messagelist_kotlincodechallenge.domain.MessageModel
 
-class MessageListAdapter(val messageClick: MessageClick, val messageLongClick: MessageLongClick) : RecyclerView.Adapter<MessageViewHolder>() {
+class MessageListAdapter(val messageClick: MessageClick, val messageLongClick: MessageLongClick) : PagedListAdapter<MessageModel, MessageViewHolder>(diffCallback) {
+
+    companion object {
+        /**
+         * This diff callback informs the PagedListAdapter how to compute list differences when new
+         * PagedLists arrive.
+         * <p>
+         * When you add a Cheese with the 'Add' button, the PagedListAdapter uses diffCallback to
+         * detect there's only a single item difference from before, so it only needs to animate and
+         * rebind a single view.
+         *
+         * @see DiffUtil
+         */
+        private val diffCallback = object : DiffUtil.ItemCallback<MessageModel>() {
+            override fun areItemsTheSame(oldItem: MessageModel, newItem: MessageModel): Boolean =
+                oldItem.id == newItem.id
+
+            /**
+             * Note that in kotlin, == checking on data classes compares all contents, but in Java,
+             * typically you'll implement Object#equals, and use it to compare object contents.
+             */
+            override fun areContentsTheSame(oldItem: MessageModel, newItem: MessageModel): Boolean =
+                oldItem == newItem
+        }
+    }
 
     val selectedMessages: List<MessageModel>
         get() {

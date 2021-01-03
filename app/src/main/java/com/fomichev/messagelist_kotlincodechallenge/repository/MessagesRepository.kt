@@ -15,7 +15,7 @@ import kotlinx.coroutines.withContext
 
 class MessagesRepository(private val database: MessagesDatabase) {
 
-    val messages: LiveData<List<MessageModel>> = Transformations.map(database.messageDao.getMessages()) {
+    val messages = database.messageDao.getMessages().mapByPage {
         it.asDomainModel()
     }
 
