@@ -2,7 +2,7 @@ package com.fomichev.messagelist_kotlincodechallenge.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.*
-import androidx.paging.Config
+import androidx.paging.PagedList
 import androidx.paging.toLiveData
 import com.fomichev.messagelist_kotlincodechallenge.database.getDatabase
 import com.fomichev.messagelist_kotlincodechallenge.domain.MessageModel
@@ -15,12 +15,7 @@ class MessageListViewModel(application: Application) : AndroidViewModel(applicat
 
     private val messagesRepository = MessagesRepository(getDatabase(application))
 
-    val messages = messagesRepository.messages.toLiveData(
-        Config(
-        pageSize = 10,
-        enablePlaceholders = false,
-        maxSize = 100)
-    )
+    val messages: LiveData<PagedList<MessageModel>>  = messagesRepository.messages.toLiveData(pageSize = 50)
 
 
     private var _eventNetworkError = MutableLiveData<Boolean>(false)
