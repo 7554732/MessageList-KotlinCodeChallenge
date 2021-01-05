@@ -13,6 +13,8 @@
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:isNetworkError = "@{safeUnbox(viewModel.eventNetworkError)}"
+        app:messages = "@{viewModel.messages}"
         app:onRefreshListener="@{() -> viewModel.refreshDataFromRepository()}"
         tools:context=".ui.MessageListFragment">
 

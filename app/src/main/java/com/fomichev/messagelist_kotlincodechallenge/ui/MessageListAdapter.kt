@@ -14,24 +14,10 @@ import com.fomichev.messagelist_kotlincodechallenge.domain.MessageModel
 class MessageListAdapter(val messageClick: MessageClick, val messageLongClick: MessageLongClick) : PagedListAdapter<MessageModel, MessageViewHolder>(diffCallback) {
 
     companion object {
-        /**
-         * This diff callback informs the PagedListAdapter how to compute list differences when new
-         * PagedLists arrive.
-         * <p>
-         * When you add a Cheese with the 'Add' button, the PagedListAdapter uses diffCallback to
-         * detect there's only a single item difference from before, so it only needs to animate and
-         * rebind a single view.
-         *
-         * @see DiffUtil
-         */
         private val diffCallback = object : DiffUtil.ItemCallback<MessageModel>() {
             override fun areItemsTheSame(oldItem: MessageModel, newItem: MessageModel): Boolean =
                 oldItem.id == newItem.id
 
-            /**
-             * Note that in kotlin, == checking on data classes compares all contents, but in Java,
-             * typically you'll implement Object#equals, and use it to compare object contents.
-             */
             override fun areContentsTheSame(oldItem: MessageModel, newItem: MessageModel): Boolean =
                 oldItem == newItem
         }
@@ -39,14 +25,11 @@ class MessageListAdapter(val messageClick: MessageClick, val messageLongClick: M
 
     val selectedMessages: List<MessageModel>
         get() {
-            return selectedItems.map{messages.get(it)}
-        }
-
-    var messages: List<MessageModel> = emptyList()
-        set(value) {
-            if(multiSelect) return
-            field = value
-            notifyDataSetChanged()
+            return selectedItems
+                .map{
+                    getItem(it)
+                }
+                .filterNotNull()
         }
 
     var multiSelect: Boolean = false
@@ -66,12 +49,10 @@ class MessageListAdapter(val messageClick: MessageClick, val messageLongClick: M
         return MessageViewHolder(withDataBinding)
     }
 
-    override fun getItemCount() = messages.size
-
     override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
         holder.viewDataBinding.also {
             it.position = position
-            it.message = messages[position]
+            it.message = getItem(position)
             it.isSelected = isSelected(position)
             it.messageClick = messageClick
             it.messageLongClick = messageLongClick

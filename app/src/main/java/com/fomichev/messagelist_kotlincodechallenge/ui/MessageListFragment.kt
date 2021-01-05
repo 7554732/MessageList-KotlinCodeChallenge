@@ -55,7 +55,7 @@ class MessageListFragment : Fragment() {
                         if(!messageListAdapter!!.selectedItems.remove(position)) {
                             messageListAdapter!!.selectedItems.add(position)
                         }
-                        messageListAdapter!!.notifyDataSetChanged()
+                        messageListAdapter!!.notifyItemChanged(position)
                     }
                 },
                 MessageLongClick {
@@ -63,7 +63,7 @@ class MessageListFragment : Fragment() {
                     if (!messageListAdapter!!.multiSelect) {
                         startActionMode()
                         messageListAdapter!!.selectedItems.add(position)
-                        messageListAdapter!!.notifyDataSetChanged()
+                        messageListAdapter!!.notifyItemChanged(position)
                     }
                 })
 
