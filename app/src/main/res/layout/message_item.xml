@@ -9,10 +9,6 @@
             type="com.fomichev.messagelist_kotlincodechallenge.domain.MessageModel" />
 
         <variable
-            name="position"
-            type="int" />
-
-        <variable
             name="isSelected"
             type="boolean" />
 
@@ -58,8 +54,8 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:background="?attr/selectableItemBackground"
-                android:onClick="@{() -> messageClick.onClick(position)}"
-                android:onLongClick="@{() -> messageLongClick.onLongClick(position)}"
+                android:onClick="@{() -> messageClick.onClick(message)}"
+                android:onLongClick="@{() -> messageLongClick.onLongClick(message)}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

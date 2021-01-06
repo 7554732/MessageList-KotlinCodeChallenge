@@ -23,21 +23,12 @@ class MessageListAdapter(val messageClick: MessageClick, val messageLongClick: M
         }
     }
 
-    val selectedMessages: List<MessageModel>
-        get() {
-            return selectedItems
-                .map{
-                    getItem(it)
-                }
-                .filterNotNull()
-        }
-
     var multiSelect: Boolean = false
 
-    val selectedItems: MutableSet<Int> = mutableSetOf<Int>()
+    val selectedMessages: MutableSet<MessageModel> = mutableSetOf<MessageModel>()
 
-    fun isSelected(position: Int): Boolean {
-        return selectedItems.contains(position)
+    fun isSelected(message: MessageModel?): Boolean {
+        return selectedMessages.contains(message)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
@@ -51,9 +42,9 @@ class MessageListAdapter(val messageClick: MessageClick, val messageLongClick: M
 
     override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
         holder.viewDataBinding.also {
-            it.position = position
-            it.message = getItem(position)
-            it.isSelected = isSelected(position)
+            val message = getItem(position)
+            it.message = message
+            it.isSelected = isSelected(message)
             it.messageClick = messageClick
             it.messageLongClick = messageLongClick
         }
@@ -69,15 +60,15 @@ class MessageViewHolder(val viewDataBinding:MessageItemBinding) :
     }
 }
 
-class MessageClick(val block: (Int) -> Unit) {
-    fun onClick(position: Int) {
-           block(position)
+class MessageClick(val block: (MessageModel) -> Unit) {
+    fun onClick(message: MessageModel) {
+           block(message)
     }
 }
 
-class MessageLongClick(val block: (Int) -> Unit) {
-    fun onLongClick(position: Int): Boolean  {
-        block(position)
+class MessageLongClick(val block: (MessageModel) -> Unit) {
+    fun onLongClick(message: MessageModel): Boolean  {
+        block(message)
         return true
     }
 }
