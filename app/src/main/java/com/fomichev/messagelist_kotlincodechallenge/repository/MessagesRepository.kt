@@ -1,7 +1,5 @@
 package com.fomichev.messagelist_kotlincodechallenge.repository
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
 import com.fomichev.messagelist_kotlincodechallenge.database.MessagesDatabase
 import com.fomichev.messagelist_kotlincodechallenge.database.asDomainModel
 import com.fomichev.messagelist_kotlincodechallenge.domain.MessageModel
@@ -15,14 +13,26 @@ import kotlinx.coroutines.withContext
 
 class MessagesRepository(private val database: MessagesDatabase) {
 
-    val messages: LiveData<List<MessageModel>> = Transformations.map(database.messageDao.getMessages()) {
+    val messages = database.messageDao.getMessages().mapByPage {
         it.asDomainModel()
     }
 
 
     suspend fun refreshMessages() {
-        val files:List<String>? = NetworkInputDataManager.files
-        if(files == null) return
+        var files:List<String> = NetworkInputDataManager.getAllFilesBefore()
+        if (files.size == 0) files = listOf(NetworkInputDataManager.nextFile()).filterNotNull()
+
+        getMessages(files)
+    }
+
+    suspend fun loadNewMessages() {
+        var files:List<String> = listOf(NetworkInputDataManager.nextFile()).filterNotNull()
+
+        getMessages(files)
+    }
+
+    suspend fun getMessages(files:List<String>){
+
         withContext(Dispatchers.IO) {
             for(file:String in files){
                 val networkMessageContainer = NetworkMessageContainer(MessageNetwork.messageService.getMessages(file))

@@ -7,6 +7,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.fomichev.messagelist_kotlincodechallenge.R
@@ -29,10 +30,9 @@ class MessageListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.messages.observe(viewLifecycleOwner, Observer<List<MessageModel>> { messages ->
-            messages?.apply {
-                messageListAdapter?.messages = messages
-            }
+
+        viewModel.messages.observe(viewLifecycleOwner, Observer<PagedList<MessageModel>>{
+            messageListAdapter!!.submitList(it)
         })
     }
 
@@ -53,20 +53,28 @@ class MessageListFragment : Fragment() {
 
         messageListAdapter = MessageListAdapter(
                 MessageClick {
-                    val position = it
+                    val message = it
                     if (messageListAdapter!!.multiSelect) {
-                        if(!messageListAdapter!!.selectedItems.remove(position)) {
-                            messageListAdapter!!.selectedItems.add(position)
+                        if(!messageListAdapter!!.selectedMessages.remove(message)) {
+                            messageListAdapter!!.selectedMessages.add(message)
                         }
-                        messageListAdapter!!.notifyDataSetChanged()
+                        viewModel.messages.value?.indexOf(message)?.let { it1 ->
+                            messageListAdapter!!.notifyItemChanged(
+                                it1
+                            )
+                        }
                     }
                 },
                 MessageLongClick {
-                    val position = it
+                    val message = it
                     if (!messageListAdapter!!.multiSelect) {
                         startActionMode()
-                        messageListAdapter!!.selectedItems.add(position)
-                        messageListAdapter!!.notifyDataSetChanged()
+                        messageListAdapter!!.selectedMessages.add(message)
+                        viewModel.messages.value?.indexOf(message)?.let { it1 ->
+                            messageListAdapter!!.notifyItemChanged(
+                                it1
+                            )
+                        }
                     }
                 })
 
@@ -100,14 +108,16 @@ class MessageListFragment : Fragment() {
         }
 
         override fun onActionItemClicked(mode: ActionMode, item: MenuItem?): Boolean {
-            viewModel.deleteMessagesFromRepository(messageListAdapter!!.selectedMessages)
+            viewModel.deleteMessagesFromRepository(messageListAdapter!!.selectedMessages.toList())
             mode.finish()
+            messageListAdapter!!.multiSelect = false
+            messageListAdapter!!.selectedMessages.clear()
             return true
         }
 
         override fun onDestroyActionMode(mode: ActionMode?) {
             messageListAdapter!!.multiSelect = false
-            messageListAdapter!!.selectedItems.clear()
+            messageListAdapter!!.selectedMessages.clear()
         }
     }
 

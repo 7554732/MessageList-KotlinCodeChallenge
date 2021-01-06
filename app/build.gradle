@@ -102,4 +102,8 @@ dependencies {
 
     // swipe refresh layout
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
+
+    // For Kotlin use paging-runtime-ktx
+    def paging_version = "2.1.2"
+    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
 }

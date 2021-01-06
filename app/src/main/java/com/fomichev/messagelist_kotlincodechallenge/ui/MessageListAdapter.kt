@@ -4,31 +4,31 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
+import androidx.paging.PagedListAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.fomichev.messagelist_kotlincodechallenge.R
 import com.fomichev.messagelist_kotlincodechallenge.databinding.MessageItemBinding
 import com.fomichev.messagelist_kotlincodechallenge.domain.MessageModel
 
-class MessageListAdapter(val messageClick: MessageClick, val messageLongClick: MessageLongClick) : RecyclerView.Adapter<MessageViewHolder>() {
+class MessageListAdapter(val messageClick: MessageClick, val messageLongClick: MessageLongClick) : PagedListAdapter<MessageModel, MessageViewHolder>(diffCallback) {
 
-    val selectedMessages: List<MessageModel>
-        get() {
-            return selectedItems.map{messages.get(it)}
-        }
+    companion object {
+        private val diffCallback = object : DiffUtil.ItemCallback<MessageModel>() {
+            override fun areItemsTheSame(oldItem: MessageModel, newItem: MessageModel): Boolean =
+                oldItem.id == newItem.id
 
-    var messages: List<MessageModel> = emptyList()
-        set(value) {
-            if(multiSelect) return
-            field = value
-            notifyDataSetChanged()
+            override fun areContentsTheSame(oldItem: MessageModel, newItem: MessageModel): Boolean =
+                oldItem == newItem
         }
+    }
 
     var multiSelect: Boolean = false
 
-    val selectedItems: MutableSet<Int> = mutableSetOf<Int>()
+    val selectedMessages: MutableSet<MessageModel> = mutableSetOf<MessageModel>()
 
-    fun isSelected(position: Int): Boolean {
-        return selectedItems.contains(position)
+    fun isSelected(message: MessageModel?): Boolean {
+        return selectedMessages.contains(message)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
@@ -40,13 +40,11 @@ class MessageListAdapter(val messageClick: MessageClick, val messageLongClick: M
         return MessageViewHolder(withDataBinding)
     }
 
-    override fun getItemCount() = messages.size
-
     override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
         holder.viewDataBinding.also {
-            it.position = position
-            it.message = messages[position]
-            it.isSelected = isSelected(position)
+            val message = getItem(position)
+            it.message = message
+            it.isSelected = isSelected(message)
             it.messageClick = messageClick
             it.messageLongClick = messageLongClick
         }
@@ -62,15 +60,15 @@ class MessageViewHolder(val viewDataBinding:MessageItemBinding) :
     }
 }
 
-class MessageClick(val block: (Int) -> Unit) {
-    fun onClick(position: Int) {
-           block(position)
+class MessageClick(val block: (MessageModel) -> Unit) {
+    fun onClick(message: MessageModel) {
+           block(message)
     }
 }
 
-class MessageLongClick(val block: (Int) -> Unit) {
-    fun onLongClick(position: Int): Boolean  {
-        block(position)
+class MessageLongClick(val block: (MessageModel) -> Unit) {
+    fun onLongClick(message: MessageModel): Boolean  {
+        block(message)
         return true
     }
 }

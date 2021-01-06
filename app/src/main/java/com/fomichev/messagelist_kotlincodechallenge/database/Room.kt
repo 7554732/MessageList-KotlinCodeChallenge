@@ -2,13 +2,14 @@ package com.fomichev.messagelist_kotlincodechallenge.database
 
 import android.content.Context
 import androidx.lifecycle.LiveData
+import androidx.paging.DataSource
 import androidx.room.*
 
 
 @Dao
 interface MessageDao {
-    @Query("select * from databasemessage")
-    fun getMessages(): LiveData<List<DatabaseMessage>>
+    @Query("select * from databasemessage order by time asc")
+    fun getMessages(): DataSource.Factory<Int, DatabaseMessage>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll( messages: List<DatabaseMessage>)
