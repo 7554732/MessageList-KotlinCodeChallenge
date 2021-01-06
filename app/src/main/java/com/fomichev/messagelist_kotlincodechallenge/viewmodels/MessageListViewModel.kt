@@ -6,6 +6,7 @@ import androidx.paging.PagedList
 import androidx.paging.toLiveData
 import com.fomichev.messagelist_kotlincodechallenge.database.getDatabase
 import com.fomichev.messagelist_kotlincodechallenge.domain.MessageModel
+import com.fomichev.messagelist_kotlincodechallenge.repository.MessagesBoundaryCallback
 import com.fomichev.messagelist_kotlincodechallenge.repository.MessagesRepository
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -15,8 +16,12 @@ class MessageListViewModel(application: Application) : AndroidViewModel(applicat
 
     private val messagesRepository = MessagesRepository(getDatabase(application))
 
-    val messages: LiveData<PagedList<MessageModel>>  = messagesRepository.messages.toLiveData(pageSize = 50)
+    private val boundaryCallback = MessagesBoundaryCallback(this)
 
+    val messages: LiveData<PagedList<MessageModel>>
+            = messagesRepository.messages.toLiveData(
+                pageSize = 10,
+                boundaryCallback = boundaryCallback)
 
     private var _eventNetworkError = MutableLiveData<Boolean>(false)
     val eventNetworkError: LiveData<Boolean>
@@ -36,6 +41,26 @@ class MessageListViewModel(application: Application) : AndroidViewModel(applicat
         viewModelScope.launch {
             try {
                 messagesRepository.refreshMessages()
+                _eventNetworkError.value = false
+                _isNetworkErrorShown.value = false
+
+            } catch (networkError: IOException) {
+                if(messages.value.isNullOrEmpty())
+                    _eventNetworkError.value = true
+            }
+        }
+    }
+
+    fun loadNewMessages(itemAtEnd: MessageModel) {
+        //  load New messages only if MessageList scrolled to the End
+        if(!messages.value.isNullOrEmpty()) {
+            val lastMessage = messages.value?.last()
+            if(itemAtEnd != lastMessage) return
+        }
+
+        viewModelScope.launch {
+            try {
+                messagesRepository.loadNewMessages()
                 _eventNetworkError.value = false
                 _isNetworkErrorShown.value = false
 

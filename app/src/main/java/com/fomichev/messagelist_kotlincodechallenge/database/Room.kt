@@ -8,7 +8,7 @@ import androidx.room.*
 
 @Dao
 interface MessageDao {
-    @Query("select * from databasemessage")
+    @Query("select * from databasemessage order by time asc")
     fun getMessages(): DataSource.Factory<Int, DatabaseMessage>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
