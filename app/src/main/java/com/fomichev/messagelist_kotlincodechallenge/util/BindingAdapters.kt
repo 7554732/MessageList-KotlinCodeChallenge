@@ -2,9 +2,12 @@
 package com.fomichev.messagelist_kotlincodechallenge.util
 
 import android.view.View
+import android.webkit.URLUtil
+import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.paging.PagedList
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.bumptech.glide.Glide
 import com.fomichev.messagelist_kotlincodechallenge.domain.MessageModel
 import com.google.android.material.card.MaterialCardView
 
@@ -22,10 +25,13 @@ fun setListItemSelected(view: MaterialCardView, isSelected: Boolean) {
     view.setChecked(isSelected)
 }
 
-/**
-*   for     app:onLongClick="@{() -> messageLongClick.onLongClick(message)}"
-*/
-@BindingAdapter("onLongClick")
-fun setOnLongClickListener(view: View, listener: Runnable) {
-    view.setOnLongClickListener { listener.run(); true }
+@BindingAdapter("imageUrl")
+fun setImageUrl(imageView: ImageView, url: String) {
+    if(URLUtil.isValidUrl(url) && url.contains(".jpg")) {
+        Glide.with(imageView.context).load(url).into(imageView)
+        imageView.visibility = View.VISIBLE
+    }
+    else{
+        imageView.visibility = View.GONE
+    }
 }
