@@ -1,13 +1,23 @@
 package com.fomichev.messagelist_kotlincodechallenge.domain
 
-import androidx.lifecycle.Transformations.map
 import com.fomichev.messagelist_kotlincodechallenge.database.DatabaseMessage
-import com.fomichev.messagelist_kotlincodechallenge.network.NetworkMessageContainer
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
 
 data class MessageModel(
     val id: String,
     val time: String,
-    val text: String)
+    val text: String){
+
+    val formattedTime: String
+        get() {
+            val date = Date(time.toLong())
+            val format: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+            val formatted: String = format.format(date)
+            return formatted
+        }
+}
 
 
 fun List<MessageModel>.asDatabaseModel(): List<DatabaseMessage> {
