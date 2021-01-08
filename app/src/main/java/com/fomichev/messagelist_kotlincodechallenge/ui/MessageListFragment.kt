@@ -2,11 +2,13 @@ package com.fomichev.messagelist_kotlincodechallenge.ui
 
 import android.os.Bundle
 import android.view.*
+import android.webkit.URLUtil
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -14,6 +16,7 @@ import com.fomichev.messagelist_kotlincodechallenge.R
 import com.fomichev.messagelist_kotlincodechallenge.databinding.FragmentMessageListBinding
 import com.fomichev.messagelist_kotlincodechallenge.domain.MessageModel
 import com.fomichev.messagelist_kotlincodechallenge.viewmodels.MessageListViewModel
+import timber.log.Timber
 
 
 class MessageListFragment : Fragment() {
@@ -63,6 +66,8 @@ class MessageListFragment : Fragment() {
                                 it1
                             )
                         }
+                    } else {
+                        navigateToImageFragment(message.text)
                     }
                 },
                 MessageLongClick {
@@ -90,6 +95,14 @@ class MessageListFragment : Fragment() {
         })
 
         return binding.root
+    }
+
+    private fun navigateToImageFragment(url: String) {
+        if(URLUtil.isValidUrl(url) && url.contains(".jpg")) {
+            view?.findNavController()
+                ?.navigate(MessageListFragmentDirections
+                    .actionMessageListFragmentToImageFragment(url))
+        }
     }
 
     fun startActionMode() {
