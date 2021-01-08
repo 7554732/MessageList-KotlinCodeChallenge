@@ -130,6 +130,7 @@ class MessageListFragment : Fragment() {
 
         override fun onDestroyActionMode(mode: ActionMode?) {
             messageListAdapter!!.multiSelect = false
+            messageListAdapter!!.notifySelectedItemsChanged()
             messageListAdapter!!.selectedMessages.clear()
         }
     }

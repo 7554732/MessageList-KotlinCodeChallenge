@@ -27,6 +27,12 @@ class MessageListAdapter(val messageClick: MessageClick, val messageLongClick: M
 
     val selectedMessages: MutableSet<MessageModel> = mutableSetOf<MessageModel>()
 
+    fun notifySelectedItemsChanged() {
+        for(sel in selectedMessages){
+            currentList?.indexOf(sel)?.let { notifyItemChanged(it) }
+        }
+    }
+
     fun isSelected(message: MessageModel?): Boolean {
         return selectedMessages.contains(message)
     }
@@ -49,7 +55,6 @@ class MessageListAdapter(val messageClick: MessageClick, val messageLongClick: M
             it.messageLongClick = messageLongClick
         }
     }
-
 }
 
 class MessageViewHolder(val viewDataBinding:MessageItemBinding) :
