@@ -1,7 +1,7 @@
 package com.fomichev.messagelist_kotlincodechallenge.network
 
 class InputFiles(
-    val url: String = "http://audiobooks3.ml/message_list/",
+    val url: String = "https://audiobooks3.ga/message_list/",
     val files: List<String> = listOf("01.json", "02.json", "03.json")
 )
 interface FileIterator {
