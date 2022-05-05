@@ -2,6 +2,7 @@
 
 На сервере есть json файлы. До них можно добраться по ссылке: https://<server_name>/endpoint/{PAGE}.json, где PAGE - номер файла от 0 до какого-то произвольного числа, например, 15.
 Каждый файл - это json массив из 50 сообщений. Сообщение содержит поля id, time и text.
+
 Пример файла:
 [
   {
@@ -17,7 +18,7 @@
   {
     "id": "eccbc87e4b5ce2fe28308fd9f2a7baf3",
     "time": 1463457782276,
-    "text": "http://audiobooks-3.ru/im/00019e08ea_200crop.jpg"
+    "text": "http://audiobooks3.ga/im/00019e08ea_200crop.jpg"
   },
 …
 ]
